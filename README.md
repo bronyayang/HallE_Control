@@ -1,4 +1,4 @@
-# HALLE-SWITCH: RETHINKING AND CONTROLLING OBJECT EXISTENCE HALLUCINATIONS IN LARGE VI- SION LANGUAGE MODELS FOR DETAILED CAPTION
+# HallE-Switch: Controlling Object Hallucination in Large Vision Language Models
 
 [[Project Page(Coming Soon)]()] [[Demo]()]  [[Data]()] [[Model Zoo]()]
 
