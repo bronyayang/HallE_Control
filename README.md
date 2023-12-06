@@ -18,8 +18,8 @@ If you find HallE-Switch useful for your research and applications, please cite 
 ```bibtex
 
 @misc{zhai2023halleswitch,
-      title={HallE-Switch: Rethinking and Controlling Object Existence Hallucinations in Large Vision Language Models for Detailed Caption}, 
-      author={Bohan Zhai and Shijia Yang and Xiangchen Zhao and Chenfeng Xu and Sheng Shen and Dongdi Zhao and Kurt Keutzer and Manling Li and Tan Yan and Xiangjun Fan},
+      title={HallE-Switch: Controlling Object Hallucination in Large Vision Language Models}, 
+      author={Bohan Zhai and Shijia Yang and Chenfeng Xu and Sheng Shen and Kurt Keutzer and Manling Li},
       year={2023},
       eprint={2310.01779},
       archivePrefix={arXiv},
