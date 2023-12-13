@@ -1,0 +1,16 @@
+I have a list of region description of an image and I want to get objects from these region descriptions and return these unique objects in a list, the object should be noun
+for example: 
+region_descriptions = ['the day was sunny', 'tall metal light post', 'white brick building with black sign', 'two men having a conversation', 'a man in a grey sweater', 'this is an outdoor picture', 'trees just beginning to bud in spring', 'shadows of tree branches on a building']
+objects = ['light post', 'building', 'sign', 'man', 'sweater', 'tree', 'shadow']
+
+because I asked unique object, so even in region_descriptions have 'two men having a conversation' and 'a man in a grey sweater', we still return one object 'man', similar idea also happened for shadows we treat it as shadow, use singular case. 
+
+Here is another example:
+region_descriptions = ['it is sunny outside', 'the road is almost empty', "the sign says 'walk'", 'Sidewalk paved in bricks ', 'A parking lot ', 'A bicycle lane ', 'crosswalk signs saying WALK']
+objects = ['road', 'sign', 'sidewalk', 'parking lot', 'bicycle lane', 'crosswalk sign']
+Here we want lower case, so we change 'Sidewalk' to 'sidewalk'
+
+
+Here is the input
+region_descriptions = {list_of_regions}
+objects = 

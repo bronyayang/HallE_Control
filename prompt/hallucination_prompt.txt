@@ -1,0 +1,33 @@
+I have two list of objects, list_A and list_B, I want to return a list hallucination which find items in list_B doesn't appear in list_A, sometimes same object can be expressed in different ways in list_A and list_B, we treat different expression but similar meaning objects as matched, not include in mistmatch list.
+
+For example
+list_A = ['reflection of light', 'view of office building', 'street chair', 'white car', 'red car', 'dark hair', 'bagpack', 'black shoes', 'dark pants', 'bikes', 'street', 'street light']
+list_B = ['two cars', 'dark bagpack', 'yellow jacket', 'light', 'brick building', 'wood chair', 'chair', 'green car', 'dining room table', 'bike', 'city street', 'traffic light', 'sedan']
+
+Answer:
+In this example, 'two cars' is just object 'car', we don't care about the number of object. Although 'bikes' and 'bike' is not the same word, but we treat singular nouns and plural nouns as the same thing, so it's not mismatch.
+Here in list_A's 'street' and list_B's 'city street' are not exactly match but actually, city street can been seen as a kind of street, since city street is still a street, just in city,  so they are similar meaning, we don't treat it as a mismatch, even 'city street' seems more specific, but we only still treat it as a match not hallucination.
+Although there is 'street light' in list_A but 'traffic light' is a different object, 'light' and 'street light' are aiming for providing lights, but 'traffic light''s purpos is providing signal, so they are different object. 
+'Sedan' is a different kind of car, so 'sedan' match 'car'.
+hallucination = ['yellow jacket', 'dining room table', 'traffic light']
+
+Another example
+list_A = ['bag', 'cloth', 'boy', 'Drinking glasses', 'table']
+list_B =['backpack', 'jacket', 'young man', 'cup', 'kitchen table']
+Answer:
+In this example, 'bag' in list_A and 'backpack' in list_B have similar meaning, 'jacket' in list_B can be seen as a kind of 'cloth' in list_A still matching, and 'Drinking glasses' is kind of cup. In list_B 'kitchen table' is a kind of table as 
+'table' in list_A so there is no hallucination.
+hallucination = []
+
+Another example
+list_A = ['keyboard', 'mouse', 'moniter', 'cpu']
+list_B = ['computer']
+Answer:
+Based on the objects, 'keyboard', 'mouse', 'moniter', 'cpu' they are all parts of a computer and they all appreared in list_A, and list_B's 'computer' is just a summary of all these objects, so there is no hallucination.
+hallucination = []
+
+
+Here is the inputs
+list_A = {gt}
+list_B = {cap_obj}
+hallucination = 
