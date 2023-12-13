@@ -5,6 +5,7 @@
 
 
 ## Release
+- [12/13] We released CCEval's code for evaluation object existence hallucination.
 - [12/3] 🔥 We released **HallE-Switch: Controlling Object Hallucination in LVLMs**. Checkout the [paper](https://arxiv.org/abs/2310.01779).
 
 ## Contents
