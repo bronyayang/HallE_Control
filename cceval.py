@@ -77,13 +77,13 @@ def load_generated_captions(cap_file):
 class CHAIR(object):
     def __init__(self, key):
         self.openai_obj = OpenAIAPIWrapper(key_pool=[key])
-        with open('./region_cap2obj_prompt.txt', 'r') as file:
+        with open('./prompt/region_cap2obj_prompt.txt', 'r') as file:
             content = file.read()
         self.region_user_prompt = content
-        with open('./cap2obj_prompt_bracket.txt', 'r') as file:
+        with open('./prompt/cap2obj_prompt_bracket.txt', 'r') as file:
             content = file.read()
         self.cap_user_prompt = content
-        with open('./hallucination_prompt.txt', 'r') as file:
+        with open('./prompt/hallucination_prompt.txt', 'r') as file:
             content = file.read()
         self.hall_user_prompt = content
     
@@ -167,7 +167,7 @@ class CHAIR(object):
             if len(hallucinated_words) > 0:
                 num_hallucinated_caps += 1
         
-        with open("/mnt/bd/bohanzhaiv1/LLM/bohan/POPE/chair/vg_info.json", "w") as file:
+        with open("./vg_info.json", "w") as file:
             json.dump(image_infos, file, indent=4)
         chair_s = (num_hallucinated_caps/num_caps)
         chair_i = (hallucinated_word_count/coco_word_count)
