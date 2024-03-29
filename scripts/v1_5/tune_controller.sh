@@ -1,9 +1,9 @@
 deepspeed --master_port 25001 --num_nodes=1 --num_gpus=8 llava/train/train_switch_mem.py \
     --deepspeed ./scripts/zero3.json \
-    --model_name_or_path /mnt/bn/bohanzhainas1/Public_Models/llava-v1.5-7b \
+    --model_name_or_path ./REPLACE_TO_LLAVA_PATH \
     --version v1 \
     --data_path ./data/detail_switch_23k.json \
-    --image_folder /mnt/bn/bohanzhainas1/Public_data/llava_1.3_data/LLaVA-Instruct-150K/train2017 \
+    --image_folder ./REPLACE_TO_IMAGE_FOLDER_PATH \
     --vision_tower openai/clip-vit-large-patch14-336 \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \

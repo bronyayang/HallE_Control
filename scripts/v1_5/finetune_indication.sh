@@ -2,12 +2,12 @@
 
 deepspeed --master_port 25001 --num_nodes=1 --num_gpus=8 llava/train/train_mem.py \
     --deepspeed ./scripts/zero3.json \
-    --model_name_or_path /mnt/bn/bohanzhainas1/Public_Models/vicuna-13b-v1.5 \
+    --model_name_or_path ./REPLACE_TO_LLAVA_PATH \
     --version v1 \
-    --data_path ./data/llava_v1_5_mix665k_sml_fix_path.json \
-    --image_folder /mnt \
+    --data_path ./data/llava_v1_5_mix665k_sml.json \
+    --image_folder ./REPLACE_TO_IMAGE_FOLDER_PATH \
     --vision_tower openai/clip-vit-large-patch14-336 \
-    --pretrain_mm_mlp_adapter /mnt/bn/bohanzhainas1/Public_Models/llava-v1.5-mlp2x-336px-pretrain-vicuna-13b-v1.5/mm_projector.bin \
+    --pretrain_mm_mlp_adapter ./REPLACE_TO_ADAPTER_PATH \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \

@@ -167,7 +167,7 @@ class CHAIR(object):
             if len(hallucinated_words) > 0:
                 num_hallucinated_caps += 1
         
-        with open("./vg_info.json", "w") as file:
+        with open("./vg_info_100.json", "w") as file:
             json.dump(image_infos, file, indent=4)
         chair_s = (num_hallucinated_caps/num_caps)
         chair_i = (hallucinated_word_count/coco_word_count)
