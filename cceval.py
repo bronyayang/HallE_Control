@@ -6,7 +6,6 @@ import argparse
 import openai
 from abc import ABC, abstractmethod
 from tqdm import tqdm
-import spacy
 import time
 
 
@@ -86,6 +85,9 @@ class CHAIR(object):
         with open('./prompt/hallucination_prompt.txt', 'r') as file:
             content = file.read()
         self.hall_user_prompt = content
+        with open('./prompt/coverage_prompt.txt', 'r') as file:
+            content = file.read()
+        self.coverage_user_prompt = content
         self.system_prompt = (
             "I am ChatGPT, a virtual assistant based on OpenAI's GPT-4 model." 
             "I'm designed to understand and generate human-like text based on the input I receive." 
@@ -187,6 +189,23 @@ class CHAIR(object):
     
         return output
     
+    def get_uncover_gpt4(self, gt, cap_obj):
+        user_prompt = self.coverage_user_prompt.format_map({'cap_obj':cap_obj, 'gt':gt})
+        gpt_ret, total_tokens = self.openai_obj.get_completion(user_prompt=user_prompt, system_prompt=self.system_prompt,max_try=10)
+
+        match = re.search(r"\[(.*?)\]", gpt_ret)
+        # print(gpt_ret)
+        # print('Not covered words are ', match)
+        # print('gt is: ', gt)
+        # print('cap_obj is: ', cap_obj)
+        if match:
+            objects_list_str = match.group(1)
+            # Split the string into a list of items
+            objects_in_image = [item.strip(" '") for item in objects_list_str.split(",")]
+            return list(set(objects_in_image))
+        else:
+            return []
+    
     def converage(self, cap_file, vg_path='./vg_info_100.json'):
         image_infos = json.load(open(vg_path))
         num_caps = 0.
@@ -243,6 +262,9 @@ class CHAIR(object):
                                      }
         return output
 
+
+
+
         
 def print_metrics(hallucination_cap_dict, quiet=False):
     sentence_metrics = hallucination_cap_dict['overall_metrics']
@@ -266,3 +288,4 @@ if __name__ == '__main__':
     else:
         coverage_dict = evaluator.converage(args.cap_file, vg_path='./vg_info_100.json')
         print(coverage_dict)
+    
