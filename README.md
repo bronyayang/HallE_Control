@@ -1,12 +1,12 @@
 # HallE-Control: Controlling Object Hallucination in Large Mutimodal Models
 
-[[Paper](https://arxiv.org/pdf/2310.01779v1.pdf)] [[Project Page](https://bohanzhai.github.io/halle-switch.github.io/)] <br>
+[[Paper](https://arxiv.org/pdf/2310.01779v3.pdf)] [[Project Page](https://bohanzhai.github.io/halle-switch.github.io/)] <br>
 [Bohan Zhai*](https://www.linkedin.com/in/bohan-zhai-202507154/), [Shijia Yang*](https://bronyayang.github.io/personal_website/), [Chenfeng Xu](https://www.chenfengx.com/), [Sheng Shen](https://sincerass.github.io/), [Kurt Keutzer](https://people.eecs.berkeley.edu/~keutzer/), [Chunyuan Li](https://chunyuan.li/), [Manling Li](https://limanling.github.io/)
 
 
 ## Release
 - [3/28] We release the full training and eval code. Welcome any question!
-- [3/27] 🔥 We released the new version **HallE-Control: Controlling Object Hallucination in LMMs**. Checkout the [paper]().
+- [3/27] 🔥 We released the new version **HallE-Control: Controlling Object Hallucination in LMMs**. Checkout the [paper](https://arxiv.org/pdf/2310.01779v3.pdf).
 - [12/13] We add CCEval's code for evaluation object existence hallucination.
 - [12/3] 🔥 We released **HallE-Switch: Controlling Object Hallucination in LVLMs**. Checkout the [paper](https://arxiv.org/abs/2310.01779).
 
