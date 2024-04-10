@@ -86,12 +86,17 @@ class CHAIR(object):
         with open('./prompt/hallucination_prompt.txt', 'r') as file:
             content = file.read()
         self.hall_user_prompt = content
+        self.system_prompt = (
+            "I am ChatGPT, a virtual assistant based on OpenAI's GPT-4 model." 
+            "I'm designed to understand and generate human-like text based on the input I receive." 
+            "My main purpose is to assist with information, answer questions, help with tasks that involve" 
+            "natural language processing, and engage in conversations with users."
+            "Please note that while I aim to provide accurate and reliable information."
+        )
     
-
     def list_region2cap(self, list_regions):
-        system_prompt = "I am ChatGPT, a virtual assistant based on OpenAI's GPT-4 model. I'm designed to understand and generate human-like text based on the input I receive. My main purpose is to assist with information, answer questions, help with tasks that involve natural language processing, and engage in conversations with users.Please note that while I aim to provide accurate and reliable information."
         user_prompt = self.region_user_prompt.format_map({'list_of_regions':list(set(list_regions))})
-        gpt_ret, total_tokens = self.openai_obj.get_completion(user_prompt=user_prompt, system_prompt=system_prompt,max_try=10)
+        gpt_ret, total_tokens = self.openai_obj.get_completion(user_prompt=user_prompt, system_prompt=self.system_prompt,max_try=10)
         match = re.search(r"\[(.*?)\]", gpt_ret)
         if match:
             objects_list_str = match.group(1)
@@ -101,9 +106,8 @@ class CHAIR(object):
             return []
     
     def cap2objs_gpt4(self, cap):
-        system_prompt = "I am ChatGPT, a virtual assistant based on OpenAI's GPT-4 model. I'm designed to understand and generate human-like text based on the input I receive. My main purpose is to assist with information, answer questions, help with tasks that involve natural language processing, and engage in conversations with users.Please note that while I aim to provide accurate and reliable information, I can't guarantee perfection, and it's always a good idea to consult additional resources or professionals when making critical decisions based on the information I provide."
         user_prompt = self.cap_user_prompt.format_map({'cap':cap})
-        gpt_ret, total_tokens = self.openai_obj.get_completion(user_prompt=user_prompt, system_prompt=system_prompt,max_try=10)
+        gpt_ret, total_tokens = self.openai_obj.get_completion(user_prompt=user_prompt, system_prompt=self.system_prompt,max_try=10)
         match = re.search(r"\[(.*?)\]", gpt_ret)
         if match:
             objects_list_str = match.group(1)
@@ -116,9 +120,8 @@ class CHAIR(object):
         return []
     
     def get_hall_gpt4(self, gt, cap_obj):
-        system_prompt = "I am ChatGPT, a virtual assistant based on OpenAI's GPT-4 model. I'm designed to understand and generate human-like text based on the input I receive. My main purpose is to assist with information, answer questions, help with tasks that involve natural language processing, and engage in conversations with users.Please note that while I aim to provide accurate and reliable information, I can't guarantee perfection, and it's always a good idea to consult additional resources or professionals when making critical decisions based on the information I provide."
         user_prompt = self.hall_user_prompt.format_map({'gt':gt, 'cap_obj':cap_obj})
-        gpt_ret, total_tokens = self.openai_obj.get_completion(user_prompt=user_prompt, system_prompt=system_prompt,max_try=10)
+        gpt_ret, total_tokens = self.openai_obj.get_completion(user_prompt=user_prompt, system_prompt=self.system_prompt,max_try=10)
         match = re.search(r"\[(.*?)\]", gpt_ret)
         if match:
             objects_list_str = match.group(1)
@@ -183,8 +186,62 @@ class CHAIR(object):
                                      }
     
         return output
-            
+    
+    def converage(self, cap_file, vg_path='./vg_info_100.json'):
+        image_infos = json.load(open(vg_path))
+        num_caps = 0.
+        caps = json.load(open(cap_file))
+        caps = caps[:100]
 
+        output = {'sentences': []} 
+        avg_len = 0
+        coco_word_count = 0.
+        uncover_word_counts = 0
+        num_uncovered_count = 0
+        sent_objects = 0
+
+        for i, cap_eval in tqdm(enumerate(caps), total=len(caps)):
+
+            # Remove instructions
+            cap = cap_eval['text']
+            imid = cap_eval['image_id']
+            if str(i+1) in image_infos or (i+1 in image_infos):
+                gt_objects = image_infos[str(i+1)]['gt_objs']
+            else:
+                exit()
+            raw_words = self.cap2objs_gpt4(cap)
+            param_words = re.findall(r'\[(.*?)\]', cap)
+            raw_words = list(set(raw_words[:] + param_words))
+            gt_objects = list(set(gt_objects))
+
+            uncover_words = self.get_uncover_gpt4(gt_objects, raw_words)
+            uncover_words = [item for item in uncover_words if item != '']
+            sent_len = len(cap.split(' '))
+            avg_len += sent_len
+
+            sent_objects += len(raw_words)
+            coco_word_count += len(gt_objects) 
+            # print('total len: ', coco_word_count)
+            # print('cap items len: ', len(raw_words))
+            # print('uncovered words len: ', len(uncover_words), uncover_words, type(uncover_words))
+            uncover_word_counts += len(uncover_words)
+            # print('total uncovered word is ', uncover_word_counts)
+            # print('coverage is ', (coco_word_count-uncover_word_counts)/coco_word_count)
+            num_caps += 1
+            if len(uncover_words) > 0:
+                num_uncovered_count += 1
+        
+        uncover_s = (num_uncovered_count/num_caps)
+        uncover_i = (uncover_word_counts/coco_word_count)
+        output['overall_metrics'] = {
+                                     'Uncovers': uncover_s,
+                                     'Uncoveri': uncover_i,
+                                     'Coveri': 1 - uncover_i,
+                                     'sentence len':avg_len / num_caps,
+                                     'avg gt objects': coco_word_count / num_caps,
+                                     'avg cap objects': sent_objects / num_caps
+                                     }
+        return output
 
         
 def print_metrics(hallucination_cap_dict, quiet=False):
@@ -197,11 +254,15 @@ def print_metrics(hallucination_cap_dict, quiet=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--cap_file", type=str, default='CAPTION FILE PATH')
+    parser.add_argument("--coverage", type=bool, default=False)
     parser.add_argument("--key", type=str, default='OPENAI_API_KEY')
     args = parser.parse_args()
 
     _, imids, _ = load_generated_captions(args.cap_file)
     evaluator = CHAIR(args.key) 
-    cap_dict = evaluator.compute_chair_vg(args.cap_file, 'PATH TO VisualGenome_task') 
-    
-    print_metrics(cap_dict)
+    if not args.coverage:
+        cap_dict = evaluator.converage(args.cap_file, 'PATH TO VisualGenome_task') 
+        print_metrics(cap_dict)
+    else:
+        coverage_dict = evaluator.converage(args.cap_file, vg_path='./vg_info_100.json')
+        print(coverage_dict)
