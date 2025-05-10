@@ -283,7 +283,7 @@ if __name__ == '__main__':
     _, imids, _ = load_generated_captions(args.cap_file)
     evaluator = CHAIR(args.key) 
     if not args.coverage:
-        cap_dict = evaluator.converage(args.cap_file, 'PATH TO VisualGenome_task') 
+        cap_dict = evaluator.compute_chair_vg(args.cap_file, vg_path='./vg_info_100.json') 
         print_metrics(cap_dict)
     else:
         coverage_dict = evaluator.converage(args.cap_file, vg_path='./vg_info_100.json')
